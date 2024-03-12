@@ -13,17 +13,20 @@ class ProductController extends Controller
     {
         $category = $request->segment(1) ?? null;
 
-        $color = $request->color;
-        $size = $request->size;
-        $pricemin = $request->pricemin;
-        $pricemax = $request->pricemax;
+        $colors = $request->color ? explode(',', $request->color) : $request->color;
+        $sizes = $request->size ? explode(',', $request->size) : $request->size;
+
+//        dd($colors);
+
+        $min = $request->pricemin;
+        $max = $request->pricemax;
 
         $order = $request->order ?? 'id';
         $short = $request->short ?? 'desc';
 
         $products = Product::query()
             ->where('status', 1)
-            ->filter($color, $size, $pricemin, $pricemax)
+            ->filter($colors, $sizes, $min, $max)
             ->with('categories:id,name,slug')
             ->whereHas('categories', function ($query) use ($category, $slug) {
                 if (!empty($slug)) {
@@ -40,10 +43,15 @@ class ProductController extends Controller
         $colorName = Product::query()
             ->where('status', 1)->groupBy('color')->pluck('color');
 
+        $maxprice = Product::query()->max('price');
+        $minprice = 0;
+
         return view('frontend.pages.product', [
             'products' => $products,
             'sizeName' => $sizeName,
             'colorName' => $colorName,
+            'minprice' => $minprice,
+            'maxprice' => $maxprice
         ]);
     }
 

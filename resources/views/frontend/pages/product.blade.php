@@ -124,7 +124,7 @@
                             @if(!empty($sizeName) && $sizeName->count() > 0)
                                 @foreach($sizeName as $key => $size)
                                     <label for="size{{ $key }}" class="d-flex">
-                                        <input type="checkbox" id="size{{ $key }}" class="mr-2 mt-1"> <span
+                                        <input type="checkbox" id="size{{ $key }}" value="{{ $size }}" {{ isset(request()->size) && in_array($size, explode(',', request()->size)) ? 'checked' : '' }} class="mr-2 mt-1 inputSize"> <span
                                             class="text-black">{{ $size }}</span>
                                     </label>
                                 @endforeach
@@ -136,14 +136,14 @@
                             @if(!empty($colorName) && $colorName->count() > 0)
                                 @foreach($colorName as $key => $color)
                                     <label for="color{{ $key }}" class="d-flex">
-                                        <input type="checkbox" id="color{{ $key }}" class="mr-2 mt-1"> <span
+                                        <input type="checkbox" id="color{{ $key }}" value="{{ $color }}" {{ isset(request()->color) && in_array($color, explode(',', request()->color)) ? 'checked' : '' }} class="mr-2 mt-1 inputColor"> <span
                                             class="text-black">{{ $color }}</span>
                                     </label>
                                 @endforeach
                             @endif
                         </div>
 
-                        <button class="btn btn-primary btn-block">Filtr</button>
+                        <button class="btn btn-primary btn-block btnFilter">Filtr</button>
 
                     </div>
                 </div>
@@ -186,7 +186,32 @@
 
 @section('js')
     <script>
-        var minprice = {{ $products->min('price') }};
-        var maxprice = {{ $products->max('price') }};
+        var pricemax = {{ request()->pricemax ?? $maxprice }};
+        var pricemin = {{ request()->pricemin ?? 0 }};
+        var maxprice = {{ $maxprice }};
+    </script>
+
+    <script>
+        $('.btnFilter').on('click', function (){
+            let url = new URL(window.location.href);
+            let colorList = $('.inputColor:checked').map((item, index) => index.value).get();
+            let sizeList = $('.inputSize:checked').map((item, index) => index.value).get();
+
+            if (colorList.length > 0){
+                url.searchParams.set('color', colorList.join(','));
+            }else {
+                url.searchParams.delete('color');
+            }
+
+            if (sizeList.length > 0){
+                url.searchParams.set('size', sizeList.join(','));
+            }else {
+                url.searchParams.delete('size');
+            }
+
+            newURL = url.href;
+            window.history.pushState({}, '', newURL);
+            location.reload();
+        });
     </script>
 @endsection

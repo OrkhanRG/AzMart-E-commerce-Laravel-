@@ -153,7 +153,7 @@ jQuery(document).ready(function($) {
       range: true,
       min: 0,
       max: maxprice,
-      values: [ minprice, maxprice ],
+      values: [ pricemin, pricemax ],
       slide: function( event, ui ) {
         $( "#amount" ).val( ui.values[ 0 ] + ' AZN - ' + ui.values[ 1 ] + ' AZN');
       }

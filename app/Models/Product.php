@@ -13,16 +13,16 @@ class Product extends Model
     protected $table = 'products';
     protected $guarded = [];
 
-    public function scopeFilter($query, $color, $size, $pricemin, $pricemax)
+    public function scopeFilter($query, $colors, $sizes, $pricemin, $pricemax)
     {
-        if (!empty($color))
+        if (!empty($colors))
         {
-            $query->where('color', $color);
+            $query->whereIn('color', $colors);
         }
 
-        if (!empty($size))
+        if (!empty($sizes))
         {
-            $query->where('size', $size);
+            $query->whereIn('size', $sizes);
         }
 
         if (!empty($pricemin) && !empty($pricemax))
