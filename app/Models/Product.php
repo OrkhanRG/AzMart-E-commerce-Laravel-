@@ -13,7 +13,7 @@ class Product extends Model
     protected $table = 'products';
     protected $guarded = [];
 
-    public function scopeFilter($query, $colors, $sizes, $pricemin, $pricemax)
+    public function scopeFilter($query, $colors, $sizes, $min, $max)
     {
         if (!empty($colors))
         {
@@ -25,10 +25,10 @@ class Product extends Model
             $query->whereIn('size', $sizes);
         }
 
-        if (!empty($pricemin) && !empty($pricemax))
+        if (!empty($min) && !empty($max))
         {
-            $query->where('price', '>=', $pricemin)
-                ->where('price', '<=', $pricemax);
+            $query->where('price', '>=', $min)
+                ->where('price', '<=', $max);
         }
 
         return $query;

@@ -24,18 +24,17 @@
 
                                 </div>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                            id="dropdownMenuReference" data-toggle="dropdown">Sırala
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                                        <a class="dropdown-item" data-sira="a_z_order" href="#">A-Z-ə sırala</a>
-                                        <a class="dropdown-item" data-sira="z_a_order" href="#">Z-A-a sırala</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" data-sira="price_max_order" href="#">Ucuzdan-Bahaya
-                                            doğru sırala</a>
-                                        <a class="dropdown-item" data-sira="price_min_order" href="#">Bahadan-Ucuza
-                                            doğru sırala</a>
-                                    </div>
+
+                                    <select class="form-control" id="btnOrderProduct">
+                                        <option class="dropdown-item" value="" >Sırala</option>
+                                        <option class="dropdown-item" value="id,asc">A-Z-ə sırala</option>
+                                        <option class="dropdown-item" value="id,desc">Z-A-a sırala</option>
+                                        <hr class="bold">
+                                        <option class="dropdown-item" value="price,asc">Ucuzdan-Bahaya
+                                            doğru sırala</option>
+                                        <option class="dropdown-item" value="price,desc">Bahadan-Ucuza
+                                            doğru sırala</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -78,18 +77,18 @@
                     </div>
                     <div class="row" data-aos="fade-up">
                         <div class="col-md-12 text-center">
-                            {{--<div class="site-block-27">
-                                 <ul>
-                                     <li><a href="#">&lt;</a></li>
-                                     <li class="active"><span>1</span></li>
-                                     <li><a href="#">2</a></li>
-                                     <li><a href="#">3</a></li>
-                                     <li><a href="#">4</a></li>
-                                     <li><a href="#">5</a></li>
-                                     <li><a href="#">&gt;</a></li>
-                                 </ul>
+{{--                            <div class="site-block-27">--}}
+{{--                                 <ul>--}}
+{{--                                     <li><a href="#">&lt;</a></li>--}}
+{{--                                     <li class="active"><span>1</span></li>--}}
+{{--                                     <li><a href="#">2</a></li>--}}
+{{--                                     <li><a href="#">3</a></li>--}}
+{{--                                     <li><a href="#">4</a></li>--}}
+{{--                                     <li><a href="#">5</a></li>--}}
+{{--                                     <li><a href="#">&gt;</a></li>--}}
+{{--                                 </ul>--}}
 
-                             </div>--}}
+{{--                             </div>--}}
                             <div class="d-flex justify-content-center">
                                 {{ $products->withQueryString()->links() }}
                             </div>
@@ -115,8 +114,9 @@
                         <div class="mb-4">
                             <h3 class="mb-3 h6 text-uppercase text-black d-block">Qiymətə Görə Sırala</h3>
                             <div id="slider-range" class="border-primary"></div>
-                            <input type="text" name="text" id="amount" class="form-control border-0 pl-0 bg-white"
-                                   disabled=""/>
+                            <input type="text" name="text" id="amount" class="form-control border-0 pl-0 bg-white" disabled=""/>
+                            <input type="text" id="priceBetween" class="form-control pl-0 bg-white" hidden=""/>
+
                         </div>
 
                         <div class="mb-4">
@@ -143,7 +143,7 @@
                             @endif
                         </div>
 
-                        <button class="btn btn-primary btn-block btnFilter">Filtr</button>
+                        <button class="btn btn-primary btn-block btnFilter">Filter</button>
 
                     </div>
                 </div>
@@ -192,8 +192,10 @@
     </script>
 
     <script>
-        $('.btnFilter').on('click', function (){
-            let url = new URL(window.location.href);
+        var url = new URL(window.location.href);
+
+        function filter()
+        {
             let colorList = $('.inputColor:checked').map((item, index) => index.value).get();
             let sizeList = $('.inputSize:checked').map((item, index) => index.value).get();
 
@@ -209,9 +211,34 @@
                 url.searchParams.delete('size');
             }
 
-            newURL = url.href;
+            let price = $('#priceBetween').val().split('-');
+            let pricemin = price[0];
+            let pricemax = price[1];
+            url.searchParams.set('pricemin', pricemin);
+            url.searchParams.set('pricemax', pricemax);
+
+            var newURL = url.href;
             window.history.pushState({}, '', newURL);
-            location.reload();
+
+        }
+
+        $('.btnFilter').on('click', function (){
+            filter();
         });
+
+        $('#btnOrderProduct').on('change', function (){
+
+            if ($('#btnOrderProduct').val() != '')
+            {
+                let order = $(this).val().split(',')[0];
+                let short = $(this).val().split(',')[1];
+                url.searchParams.set('short', short);
+                url.searchParams.set('order', order);
+            }
+
+            filter();
+        });
+
+
     </script>
 @endsection

@@ -18,7 +18,7 @@ class ProductController extends Controller
 
 //        dd($colors);
 
-        $min = $request->pricemin;
+        $min = $request->pricemin == 0 ? 0.1 : $request->pricemin;
         $max = $request->pricemax;
 
         $order = $request->order ?? 'id';
