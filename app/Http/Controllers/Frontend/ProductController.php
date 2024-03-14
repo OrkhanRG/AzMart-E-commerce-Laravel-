@@ -37,6 +37,13 @@ class ProductController extends Controller
             ->orderBy($order, $short)
             ->paginate(12);
 
+        //ajax response
+        if ($request->ajax())
+        {
+            $view = view('frontend.ajax.product-list', compact('products'))->render();
+            return response(['data' => $view, 'pagination' => (string) $products->withQueryString()->links()]);
+        }
+
         $sizeName = Product::query()
             ->where('status', 1)->groupBy('size')->pluck('size');
 
