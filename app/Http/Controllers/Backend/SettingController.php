@@ -34,8 +34,7 @@ class SettingController extends Controller
     {
         $setting = $request->all();
 
-        if (Setting::query()->create($setting))
-        {
+        if (Setting::query()->create($setting)) {
             return redirect()->route('admin.setting.index')->with('success', 'Parametr yaradıldı!');
         } else {
             return redirect()->route('admin.setting.create')->with('error', 'Parametr yaradılma zamanı xəta yarandı!');
@@ -60,8 +59,7 @@ class SettingController extends Controller
     {
         $setting = Setting::query()->where('id', $id)->firstOrFail();
 
-        if ($setting->update($request->all()))
-        {
+        if ($setting->update($request->all())) {
             return back()->with('success', 'Parametr güncəlləndi!');
         } else {
             return back()->with('error', 'Parametr yaradılma zamanı xəta yarandı!');
@@ -71,8 +69,23 @@ class SettingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(string $id)
+    public function delete(Request $request)
     {
-        //
+        $id = $request->id;
+        $setting = Setting::query()->where('id', $id)->firstOrFail();
+
+        if (!$setting) {
+            return response([
+                'success' => 'Parametr mövcud deyil!',
+                'status' => 'no'
+            ]);
+        }
+
+        $setting->delete();
+
+        return response([
+            'success' => 'Parametr silindi!',
+            'status' => 'ok'
+        ]);
     }
 }
