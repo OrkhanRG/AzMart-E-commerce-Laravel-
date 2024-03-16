@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\ContactController;
 use App\Http\Controllers\Backend\TestController;
+use App\Http\Controllers\Backend\SettingController;
 
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], function (){
@@ -42,4 +43,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::put('/contact/update/{id}', [ContactController::class, 'update'])->name('contact.update');
     Route::post('/contact/status-change', [ContactController::class, 'statusChange'])->name('contact.status-change');
     Route::delete('/contact/delete', [ContactController::class, 'delete'])->name('contact.delete');
+
+    //setting
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
+    Route::get('/setting/create', [SettingController::class, 'create'])->name('setting.create');
+    Route::post('/setting/create', [SettingController::class, 'store']);
+    Route::get('/setting/edit/{id}', [SettingController::class, 'edit'])->name('setting.edit');
+    Route::post('/setting/edit/{id}', [SettingController::class, 'update']);
+    Route::delete('/setting/delete', [SettingController::class, 'delete'])->name('setting.delete');
 });

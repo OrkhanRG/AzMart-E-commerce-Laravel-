@@ -21,7 +21,7 @@
 
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.about.index') }}">
-                <i class="ti-settings menu-icon"></i>
+                <i class="ti-info-alt menu-icon"></i>
                 <span class="menu-title">Haqqımızda</span>
             </a>
         </li>
@@ -30,6 +30,13 @@
             <a class="nav-link" href="{{ route('admin.contact.index') }}">
                 <i class="ti-bookmark-alt menu-icon"></i>
                 <span class="menu-title">Kontaktlar</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.setting.index') }}">
+                <i class="ti-settings menu-icon"></i>
+                <span class="menu-title">Parametrlər</span>
             </a>
         </li>
 {{--        <li class="nav-item">--}}
