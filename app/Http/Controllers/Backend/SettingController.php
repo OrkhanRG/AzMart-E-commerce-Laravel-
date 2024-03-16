@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SettingsRequest;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -29,9 +30,16 @@ class SettingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SettingsRequest $request)
     {
-        //
+        $setting = $request->all();
+
+        if (Setting::query()->create($setting))
+        {
+            return redirect()->route('admin.setting.index')->with('success', 'Parametr yaradıldı!');
+        } else {
+            return redirect()->route('admin.setting.create')->with('error', 'Parametr yaradılma zamanı xəta yarandı!');
+        }
     }
 
 
