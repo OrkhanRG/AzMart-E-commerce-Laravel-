@@ -56,9 +56,16 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(SettingsRequest $request, string $id)
     {
-        //
+        $setting = Setting::query()->where('id', $id)->firstOrFail();
+
+        if ($setting->update($request->all()))
+        {
+            return back()->with('success', 'Parametr güncəlləndi!');
+        } else {
+            return back()->with('error', 'Parametr yaradılma zamanı xəta yarandı!');
+        }
     }
 
     /**
