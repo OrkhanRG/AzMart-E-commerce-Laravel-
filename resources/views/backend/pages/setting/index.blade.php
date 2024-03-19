@@ -35,7 +35,7 @@
                                     <tr id="row-{{ $setting->id }}">
 
                                         <td>{{ $setting->name }}</td>
-                                        <td>{{ $setting->content }}</td>
+                                        <td>{!! $setting->content !!}</td>
                                         <td>{{ $setting->type }}</td>
                                         <td class="d-flex">
                                             <a href="{{ route('admin.setting.edit', $setting->id) }}"
