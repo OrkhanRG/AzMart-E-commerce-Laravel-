@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 mb-0"><a href="index.html">Anasəhifə</a> <span class="mx-2 mb-0">/</span> <strong
-                        class="text-black">Səbət</strong></div>
+                            class="text-black">Səbət</strong></div>
             </div>
         </div>
     </div>
@@ -82,18 +82,23 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="text-black h4" for="coupon">Kupon</label>
-                            <p>Kupon kodunuzu aşağıdakı sahəyə daxil edərək endirimdən yararlana bilərsiz.</p>
+                    <form action="{{ route('apply-coupon') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="text-black h4" for="coupon">Kupon</label>
+                                <p>Kupon kodunuzu aşağıdakı sahəyə daxil edərək endirimdən yararlana bilərsiz.</p>
+                            </div>
+                            <div class="col-md-8 mb-3 mb-md-0">
+                                <input type="text" name="coupon_name" class="form-control py-3" id="coupon"
+                                       placeholder="Kupon Kod">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary btn-sm">Kuponu Təsdiq Et</button>
+                            </div>
+
                         </div>
-                        <div class="col-md-8 mb-3 mb-md-0">
-                            <input type="text" class="form-control py-3" id="coupon" placeholder="Kupon Kod">
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary btn-sm">Kuponu Təsdiq Et</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="col-md-6 pl-5">
                     <div class="row justify-content-end">
@@ -108,7 +113,7 @@
                                     <span class="text-black">Ümumi Məbləğ</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-black">{{ $totalPrice }} AZN</strong>
+                                    <strong class="text-black">{{ $oldTotalPrice }} AZN</strong>
                                 </div>
                             </div>
                             <div class="row mb-5">
@@ -116,7 +121,18 @@
                                     <span class="text-black">Son Məbləğ</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-black">{{ $totalPrice }} AZN</strong>
+                                    <strong class="text-danger" style="font-size: 20px">{{ $totalPrice }} AZN</strong>
+                                    <br>
+                                    @if(session('newTotalPrice') && $totalPrice > 0)
+                                        @php
+                                            $percentage = round(100 - $totalPrice*100/$oldTotalPrice, 2);
+                                            $percentage = floor($percentage*100)/100;
+                                        @endphp
+                                        <strong class="text-warning">{{ $percentage }} %</strong>
+                                        <small style="margin-left: 5px">
+                                            <s class="text-secondary">{{ $oldTotalPrice }} AZN</s>
+                                        </small>
+                                    @endif
                                 </div>
                             </div>
 

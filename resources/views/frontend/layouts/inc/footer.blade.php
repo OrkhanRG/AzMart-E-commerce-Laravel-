@@ -20,7 +20,7 @@
                 <div class="block-5 mb-5">
                     <h3 class="footer-heading mb-4">Əlaqə Məlumatları</h3>
                     <ul class="list-unstyled">
-                        <li class="address">{{ $settings['address'] ??  'Default Address'}}</li>
+                        <li class="address">{!! $settings['address'] ??  'Default Address' !!}</li>
                         <li class="phone"><a href="tel://{{str_replace($settings['phone'], '-', '')}}">{{ $settings['phone'] ??  'Default Phone'}}</a></li>
                         <li class="email">{{ $settings['email'] ?? 'Default Email' }}</li>
                     </ul>

@@ -48,4 +48,6 @@ Route::middleware('settings')->group(function (){
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Coupon
+    Route::post('/apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon');
 });
