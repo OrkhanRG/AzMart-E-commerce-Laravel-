@@ -93,8 +93,17 @@ class ProductController extends Controller
         //
     }
 
-    public function statusChange()
+    public function statusChange(Request $request)
     {
+        $id = $request->id;
+        $product = Product::query()->where('id', $id)->first();
 
+        $product->status = $product->status ? 0 : 1;
+        $product->save();
+
+        return response([
+            'success' => 'Status dəyişdirildi!',
+            'status' => $product->status
+            ]);
     }
 }

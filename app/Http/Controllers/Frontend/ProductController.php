@@ -73,6 +73,7 @@ class ProductController extends Controller
             ->where('status', 1)
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->orderBy('id', 'desc')
             ->limit('6')
             ->get();
 
