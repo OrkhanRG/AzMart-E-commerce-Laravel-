@@ -20,6 +20,13 @@
         </li>
 
         <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.product.index') }}">
+                <i class="ti-package menu-icon"></i>
+                <span class="menu-title">Məhsullar</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.about.index') }}">
                 <i class="ti-info-alt menu-icon"></i>
                 <span class="menu-title">Haqqımızda</span>
@@ -39,18 +46,19 @@
                 <span class="menu-title">Parametrlər</span>
             </a>
         </li>
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">--}}
-{{--                <i class="icon-layout menu-icon"></i>--}}
-{{--                <span class="menu-title">Slaydlar</span>--}}
-{{--                <i class="menu-arrow"></i>--}}
-{{--            </a>--}}
-{{--            <div class="collapse" id="ui-basic">--}}
-{{--                <ul class="nav flex-column sub-menu">--}}
-{{--                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.slider.index') }}">Slaydlar</a></li>--}}
-{{--                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.slider.create') }}">Yeni Slayd Yarat</a></li>--}}
-{{--                </ul>--}}
-{{--            </div>--}}
-{{--        </li>--}}
+
+{{--        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <i class="icon-layout menu-icon"></i>
+                <span class="menu-title">Slaydlar</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.slider.index') }}">Slaydlar</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.slider.create') }}">Yeni Slayd Yarat</a></li>
+                </ul>
+            </div>
+        </li>--}}
     </ul>
 </nav>

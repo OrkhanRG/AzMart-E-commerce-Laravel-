@@ -3,10 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\HomeController;
 use App\Http\Controllers\Backend\SliderController;
+use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\ContactController;
-use App\Http\Controllers\Backend\TestController;
 use App\Http\Controllers\Backend\SettingController;
 
 
@@ -51,4 +51,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::get('/setting/edit/{id}', [SettingController::class, 'edit'])->name('setting.edit');
     Route::post('/setting/edit/{id}', [SettingController::class, 'update']);
     Route::delete('/setting/delete', [SettingController::class, 'delete'])->name('setting.delete');
+
+    //product
+    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('/product/create', [ProductController::class, 'store']);
+    Route::get('/product/edit/{id}', [ProductController::class, 'edit'])->name('product.edit');
+    Route::post('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('/product/delete', [ProductController::class, 'delete'])->name('product.delete');
+    Route::post('/product/status-change', [ProductController::class, 'statusChange'])->name('product.status-change');
 });
