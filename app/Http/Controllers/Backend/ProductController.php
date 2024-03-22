@@ -88,9 +88,26 @@ class ProductController extends Controller
         return back()->with('success', 'Məhsul güncəlləndi!');
     }
 
-    public function delete(string $id)
+    public function delete(Request $request)
     {
-        //
+        $product = Product::query()->where('id', $request->id)->firstOrFail();
+
+        $delete = $product->delete();
+
+        if (!$delete)
+        {
+            return response([
+                'success' => 'Slayd silinmədi!',
+                'status' => 'no'
+            ]);
+        }
+
+        imgDelete($product->image);
+
+        return response([
+            'success' => 'Slayd silindi!',
+            'status' => 'ok'
+        ]);
     }
 
     public function statusChange(Request $request)

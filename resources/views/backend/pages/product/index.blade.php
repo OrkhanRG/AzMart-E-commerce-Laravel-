@@ -147,7 +147,7 @@
             $('.delete').on('click', function () {
                 let self = $(this);
                 let id = self.data('id');
-                alertify.confirm('Slaydı Silmək istəyirsiz?',
+                alertify.confirm('Sil' ,'Slaydı Silmək istəyirsiz?',
                     function () {
                         $.ajax({
                             type: 'POST',
@@ -157,7 +157,7 @@
                                 _method: "DELETE"
                             },
                             success: function (data) {
-                                if(data.status == 'ok')
+                                if(data.status === 'ok')
                                 {
                                     $('#row-'+id).remove();
                                     alertify.success('Slayd Silindi!');
