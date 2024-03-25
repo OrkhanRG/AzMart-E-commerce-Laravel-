@@ -10,7 +10,7 @@
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Slider</h4>
                         <p class="card-description">
-                            <a href="{{ route('admin.setting.create') }}" class="btn btn-success btn-sm">Yeni Slayd</a>
+                            <a href="{{ route('admin.setting.create') }}" class="btn btn-success btn-sm">Yeni Parametr</a>
                         </p>
                     </div>
                     @if(session()->get('success'))

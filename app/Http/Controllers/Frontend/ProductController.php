@@ -16,8 +16,6 @@ class ProductController extends Controller
         $colors = $request->color ? explode(',', $request->color) : $request->color;
         $sizes = $request->size ? explode(',', $request->size) : $request->size;
 
-//        dd($colors);
-
         $min = $request->pricemin == 0 ? 0.1 : $request->pricemin;
         $max = $request->pricemax;
 
@@ -86,10 +84,54 @@ class ProductController extends Controller
         ]);
     }
 
-    public function productBigSale()
+    public function productBigSale(Request $request, $slug = null)
     {
-        $products = Product::query()->where('status', 1)->paginate(12);
+        $category = $request->segment(1) ?? null;
 
-        return view('frontend.pages.product', compact('products'));
+        $colors = $request->color ? explode(',', $request->color) : $request->color;
+        $sizes = $request->size ? explode(',', $request->size) : $request->size;
+
+        $min = $request->pricemin == 0 ? 0.1 : $request->pricemin;
+        $max = $request->pricemax;
+
+        $order = $request->order ?? 'id';
+        $short = $request->short ?? 'desc';
+
+        $products = Product::query()
+            ->where('status', 1)
+            ->filter($colors, $sizes, $min, $max)
+            ->with('categories:id,name,slug')
+            ->whereHas('categories', function ($query) use ($category, $slug) {
+                if (!empty($slug)) {
+                    $query->where('slug', $slug);
+                }
+                return $query;
+            })
+            ->orderBy($order, $short)
+            ->paginate(12);
+
+        //ajax response
+        if ($request->ajax())
+        {
+            $view = view('frontend.ajax.product-list', compact('products'))->render();
+            return response(['data' => $view, 'pagination' => (string) $products->withQueryString()->links()]);
+        }
+
+        $sizeName = Product::query()
+            ->where('status', 1)->groupBy('size')->pluck('size');
+
+        $colorName = Product::query()
+            ->where('status', 1)->groupBy('color')->pluck('color');
+
+        $maxprice = Product::query()->max('price');
+        $minprice = 0;
+
+        return view('frontend.pages.product', [
+            'products' => $products,
+            'sizeName' => $sizeName,
+            'colorName' => $colorName,
+            'minprice' => $minprice,
+            'maxprice' => $maxprice
+        ]);
     }
 }

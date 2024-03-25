@@ -29,7 +29,6 @@ class SettingsMiddleware
             'categories' => $categories
         ]);
 
-
         return $next($request);
     }
 }

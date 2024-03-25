@@ -57,9 +57,9 @@
                 @if(!empty($categories) && count($categories) > 0)
                     @foreach($categories->where('parent_category', null) as $category)
                         <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
-                            <a class="block-2-item" href="{{ route('product'.$category->slug) }}">
+                            <a class="block-2-item" href="{{ url($category->slug) }}">
                                 <figure class="image">
-                                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="img-fluid">
+                                    <img src="{{ asset($category->image ?? 'img/category/default.png') }}" alt="{{ $category->name ?? '' }}" class="img-fluid">
                                 </figure>
                                 <div class="text">
                                     <span class="text-uppercase">Geyim</span>
@@ -83,66 +83,22 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="nonloop-block-3 owl-carousel">
-                        <div class="item">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Tank Top</a></h3>
-                                    <p class="mb-0">Finding perfect t-shirt</p>
-                                    <p class="text-primary font-weight-bold">50 &#8380;</p>
+                        @foreach($lastProduct as $product)
+                            <div class="item">
+                                <div class="block-4 text-center">
+                                    <figure class="block-4-image">
+                                        <a href="{{ route('productDetail', ['slug' => $product->slug]) }}">
+                                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-fluid">
+                                        </a>
+                                    </figure>
+                                    <div class="block-4-text p-4">
+                                        <h3><a href="{{ route('productDetail', ['slug' => $product->slug]) }}">{{ $product->name }}</a></h3>
+                                        <p class="mb-0">{{ $product->short_name }}</p>
+                                        <p class="text-primary font-weight-bold">{{ $product->price }} &#8380;</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="item">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Corater</a></h3>
-                                    <p class="mb-0">Finding perfect products</p>
-                                    <p class="text-primary font-weight-bold">50 &#8380;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="images/cloth_2.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Polo Shirt</a></h3>
-                                    <p class="mb-0">Finding perfect products</p>
-                                    <p class="text-primary font-weight-bold">50 &#8380;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="images/cloth_3.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">T-Shirt Mockup</a></h3>
-                                    <p class="mb-0">Finding perfect products</p>
-                                    <p class="text-primary font-weight-bold">50 &#8380;</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Corater</a></h3>
-                                    <p class="mb-0">Finding perfect products</p>
-                                    <p class="text-primary font-weight-bold">50 &#8380;</p>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -158,11 +114,11 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-md-12 col-lg-7 mb-5">
-                    <a href="{{ route('bigSale') }}"><img src="images/blog_1.jpg" alt="Image placeholder" class="img-fluid rounded"></a>
+                    <a href="{{ route('bigSale') }}"><img src="{{ asset($settings['big_sale_image']) }}" alt="Image placeholder" class="img-fluid rounded"></a>
                 </div>
                 <div class="col-md-12 col-lg-5 text-center pl-md-5">
-                    <h2><a href="javascript:void(0)">Bütün məhsullara 50%-dək endirim</a></h2>
-                    <p>Bütün məhsullara 50%-dək endirim var 😍. Daha çox məhsul üçün aşağıdakı linkə keçid edin.⬇️</p>
+                    <h2><a href="javascript:void(0)">{{ $settings['big_sale_title'] }}</a></h2>
+                    <p>{{ $settings['big_sale_text'] }}</p>
                     <p><a href="{{ route('bigSale') }}" class="btn btn-primary btn-sm">Endirimdəki Məhsullar</a></p>
                 </div>
             </div>
