@@ -39,8 +39,20 @@
                     @endif
                     <form class="forms-sample"
                           action="{{ isset($setting) ? route('admin.setting.edit', $setting->id) : route('admin.setting.create') }}"
-                          method="POST">
+                          method="POST"
+                          enctype="multipart/form-data">
                         @csrf
+
+                        @if(isset($setting) && $setting->type === 'file')
+                            <div class="form-group">
+                                <label for="image"><b
+                                        class="text-warning">{{ isset($setting->content) ? 'Yüklü Şəkil' : 'Şəkil Yoxdur!' }}</b></label>
+                                <div><img width="200"
+                                          src="{{ asset(isset($setting->content) ? $setting->content : '/img/settings/default.png') }}"
+                                          alt=""></div>
+                            </div>
+                        @endif
+
                         <div class="form-group">
                             <label for="type">Type</label><select name="type" id="type" class="form-control col-4">
                                 <option value="">Type seçin</option>
@@ -63,6 +75,10 @@
                                 <option
                                     value="number" {{ isset($setting) && $setting->type == 'number' ? 'selected' : '' }}>
                                     number
+                                </option>
+                                <option
+                                    value="file" {{ isset($setting) && $setting->type == 'file' ? 'selected' : '' }}>
+                                    file
                                 </option>
                             </select>
 
@@ -92,6 +108,9 @@
                                 @elseif(isset($setting) && $setting->type === 'number')
                                     <input type="number" name="content" id="content" class="form-control"
                                            value="{{ isset($setting) ? $setting->content : '' }}">
+                                @elseif(isset($setting) && $setting->type === 'file')
+                                    <input type="file" name="content" id="content" class="form-control"
+                                           value="{{ isset($setting) ? $setting->content : '' }}">
                                 @else
                                     <div class="alert alert-warning"><b class="text-primary">Type
                                             Seçilməyib!</b><br><br> Məzmunu boş göndərmək istəmirsizsə, zəhmət olmasa
@@ -115,12 +134,11 @@
 
     <script>
 
-        $(document).ready(function (){
-           ckediotr();
+        $(document).ready(function () {
+            ckediotr();
         });
 
-        function ckediotr()
-        {
+        function ckediotr() {
             ClassicEditor
                 .create(document.querySelector('#ckeditor'))
                 .then(editor => {
@@ -131,7 +149,7 @@
                 });
         }
 
-        $('#type').on('change', function (){
+        $('#type').on('change', function () {
             let type = $(this).val();
             let value = "{!! isset($setting) ? $setting->content : '' !!}"
             let newElement;
@@ -144,8 +162,7 @@
                     value: value
                 });
                 $('.inputContent').empty().append(newElement);
-            }
-            else if(type === 'textarea') {
+            } else if (type === 'textarea') {
                 newElement = $("<textarea></textarea>", {
                     class: "form-control",
                     name: "content",
@@ -153,8 +170,7 @@
                     rows: "4",
                 }).val(value);
                 $('.inputContent').empty().append(newElement);
-            }
-            else if(type === 'ckeditor') {
+            } else if (type === 'ckeditor') {
                 newElement = $("<textarea></textarea>", {
                     class: "form-control ck-editor__editable",
                     name: "content",
@@ -162,8 +178,7 @@
                 }).val(value);
                 $('.inputContent').empty().append(newElement);
                 ckediotr()
-            }
-            else if (type === 'email') {
+            } else if (type === 'email') {
                 newElement = $('<input>', {
                     type: "email",
                     class: "form-control",
@@ -172,10 +187,18 @@
                     value: value
                 });
                 $('.inputContent').empty().append(newElement);
-            }
-            else if (type === 'number') {
+            } else if (type === 'number') {
                 newElement = $('<input>', {
                     type: "number",
+                    class: "form-control",
+                    name: "content",
+                    id: "content",
+                    value: value
+                });
+                $('.inputContent').empty().append(newElement);
+            } else if (type === 'file') {
+                newElement = $('<input>', {
+                    type: "file",
                     class: "form-control",
                     name: "content",
                     id: "content",

@@ -33,9 +33,14 @@
                             @if($settings && count($settings) > 0)
                                 @foreach($settings as $setting)
                                     <tr id="row-{{ $setting->id }}">
-
                                         <td>{{ $setting->name }}</td>
-                                        <td>{!! $setting->content !!}</td>
+                                        @if(substr($setting->content, 0, 13) === 'img/settings/')
+                                            <td>
+                                                <img src="{{ asset($setting->content) }}" alt="{{ $setting->name }}">
+                                            </td>
+                                        @else
+                                            <td>{!! $setting->content !!}</td>
+                                        @endif
                                         <td>{{ $setting->type }}</td>
                                         <td class="d-flex">
                                             <a href="{{ route('admin.setting.edit', $setting->id) }}"

@@ -34,6 +34,15 @@ class SettingController extends Controller
     {
         $setting = $request->all();
 
+        if ($request->file('content'))
+        {
+            $image = $request->file('content');
+            $folder = 'img/settings/';
+            $title = $request->name;
+            $setting['content'] = imgUpload($image, $folder, $title);
+        }
+
+
         if (Setting::query()->create($setting)) {
             return redirect()->route('admin.setting.index')->with('success', 'Parametr yaradıldı!');
         } else {
@@ -58,8 +67,18 @@ class SettingController extends Controller
     public function update(SettingsRequest $request, string $id)
     {
         $setting = Setting::query()->where('id', $id)->firstOrFail();
+        $data = $request->all();
 
-        if ($setting->update($request->all())) {
+        if ($request->file('content'))
+        {
+            imgDelete($setting->content);
+            $image = $request->file('content');
+            $folder = 'img/settings/';
+            $title = $request->name;
+            $data['content'] = imgUpload($image, $folder, $title);
+        }
+
+        if ($setting->update($data)) {
             return back()->with('success', 'Parametr güncəlləndi!');
         } else {
             return back()->with('error', 'Parametr yaradılma zamanı xəta yarandı!');
@@ -73,6 +92,11 @@ class SettingController extends Controller
     {
         $id = $request->id;
         $setting = Setting::query()->where('id', $id)->firstOrFail();
+
+        if ($setting->type === 'file' && $setting->content)
+        {
+            imgDelete($setting->content);
+        }
 
         if (!$setting) {
             return response([
