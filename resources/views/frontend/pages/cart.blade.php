@@ -31,7 +31,7 @@
 
                             @if(!empty($cartItems) && count($cartItems) > 0)
                                 @foreach($cartItems as $key => $item)
-                                    <tr>
+                                    <tr class="item-{{$key}}">
                                         <td class="product-thumbnail">
                                             <img src="{{ $item['image'] }}" alt="Image" class="img-fluid">
                                         </td>
@@ -42,25 +42,29 @@
                                         <td>
                                             <div class="input-group mb-3" style="max-width: 120px;">
                                                 <div class="input-group-prepend">
-                                                    <button class="btn btn-outline-primary js-btn-minus"
-                                                            type="button">
+                                                    <button class="btn btn-outline-primary js-btn-minus btnDecrement"
+                                                            type="button"
+                                                            data-id="{{ $key }}"
+                                                            data-status="-">
                                                         &minus;
                                                     </button>
                                                 </div>
-                                                <input type="text" class="form-control text-center"
+                                                <input type="text" class="form-control text-center productCount"
                                                        value="{{ $item['count'] }}" placeholder=""
                                                        aria-label="Example text with button addon"
                                                        aria-describedby="button-addon1">
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-outline-primary js-btn-plus"
-                                                            type="button">
+                                                    <button class="btn btn-outline-primary js-btn-plus btnIncrement"
+                                                            type="button"
+                                                            data-id="{{ $key }}"
+                                                            data-status="+">
                                                         &plus;
                                                     </button>
                                                 </div>
                                             </div>
 
                                         </td>
-                                        <td>{{ $item['price'] * $item['count'] }} AZN</td>
+                                        <td class="itemTotalPrice">{{ $item['price'] * $item['count'] }} AZN</td>
                                         <form action="{{ route('cart.remove') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="productID" value="{{ $key }}">
@@ -113,7 +117,7 @@
                                     <span class="text-black">Ümumi Məbləğ</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-black">{{ $oldTotalPrice }} AZN</strong>
+                                    <strong class="text-black totalPriceAll">{{ $oldTotalPrice }} AZN</strong>
                                 </div>
                             </div>
                             <div class="row mb-5">
@@ -121,7 +125,7 @@
                                     <span class="text-black">Son Məbləğ</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-danger" style="font-size: 20px">{{ $totalPrice }} AZN</strong>
+                                    <strong class="text-danger totalPriceLast" style="font-size: 20px">{{ $totalPrice }} AZN</strong>
                                     <br>
                                     @if(session('newTotalPrice') && $totalPrice > 0)
                                         @php
@@ -149,4 +153,39 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('js')
+    <script>
+        $('.btnIncrement, .btnDecrement').on('click', function () {
+            let self = $(this);
+            let id = self.data('id');
+            let status = self.data('status');
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('cart.add') }}",
+                data: {
+                    productID: id,
+                    status: status,
+                },
+                success: function (data) {
+                    if (!data.count)
+                    {
+                        $('.item-'+id).remove();
+
+                    }
+                    else {
+                        $('.item-'+id).find('.itemTotalPrice').text(data.totalItemPrice + ' AZN');
+                    }
+                    $('.totalPriceAll, .totalPriceLast').text(data.totalPrice + ' AZN');
+
+                },
+                error: function () {
+                    console.log('Ajax Error!')
+                }
+            });
+        })
+
+    </script>
 @endsection

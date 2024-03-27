@@ -40,6 +40,7 @@ class CartController extends Controller
 
         $count = $request->count ?? 1;
         $size = $request->size ?? $product->size;
+        $totalItemPrice = 0;
 
         if (!$product) {
             return back()->withErrors('Məhsul tapılmadı');
@@ -47,21 +48,49 @@ class CartController extends Controller
 
         $cartItems = session('cart', []);
 
-        if (array_key_exists($productID, $cartItems)) {
-            $cartItems[$productID]['count'] += $count;
+        if (!$request->ajax()) {
+            if (array_key_exists($productID, $cartItems)) {
+                $cartItems[$productID]['count'] += $count;
+            } else {
+                $cartItems[$productID] = [
+                    'image' => $product->image,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'count' => $count,
+                    'size' => $size
+                ];
+            }
         } else {
-            $cartItems[$productID] = [
-                'image' => $product->image,
-                'name' => $product->name,
-                'price' => $product->price,
-                'count' => $count,
-                'size' => $size
-            ];
+
+            if ($request->status === '+') {
+                $cartItems[$productID]['count'] += 1;
+            } else {
+                $cartItems[$productID]['count'] -= 1;
+            }
+
+            $totalItemPrice = $cartItems[$productID]['count'] * $cartItems[$productID]['price'];
+            $totalPrice = 0;
+
+            if ($cartItems[$productID]['count'] <= 0) {
+                unset($cartItems[$productID]);
+            }
+
+            foreach ($cartItems as $item) {
+                $totalPrice += $item['price'] * $item['count'];
+            }
         }
 
         session([
-            'cart' => $cartItems
+            'cart' => $cartItems,
         ]);
+
+        if ($request->ajax()) {
+            return response([
+                'count' => isset($cartItems[$productID]),
+                'totalItemPrice' => $totalItemPrice,
+                'totalPrice' => $totalPrice
+            ]);
+        }
 
         return back()->with([
             'success' => 'Məhsul Səbətə Əlavə Olundu!'
@@ -101,8 +130,7 @@ class CartController extends Controller
         $coupon = Coupon::query()->where('name', $request->coupon_name)->where('status', 1)->first();
         $price = $coupon->price ?? 0;
 
-        if (!$coupon)
-        {
+        if (!$coupon) {
             return back()->with('error', 'Daxil etdiyiniz kupon yanlışdır!');
         }
 
