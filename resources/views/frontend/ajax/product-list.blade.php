@@ -16,7 +16,7 @@
                             <a href="{{ route('productDetail', ['slug' => $product->slug]) }}">{{ $product->name }}</a>
                         </h3>
                         <p class="mb-0">{{ $product->short_name }}</p>
-                        <p class="text-primary font-weight-bold">{{ $product->price }} AZN</p>
+                        <p class="text-primary font-weight-bold">{{ $product->price }} &#8380;</p>
                         <button type="submit" class="buy-now btn btn-sm btn-primary">Səbətə Əlavə
                             Et
                         </button>

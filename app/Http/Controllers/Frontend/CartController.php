@@ -78,6 +78,8 @@ class CartController extends Controller
             foreach ($cartItems as $item) {
                 $totalPrice += $item['price'] * $item['count'];
             }
+
+            session()->forget(['coupon_code', 'newTotalPrice']);
         }
 
         session([
@@ -148,6 +150,27 @@ class CartController extends Controller
         }
 
         session()->put('newTotalPrice', $totalPrice);
+        session()->put('coupon_code', $request->coupon_name);
         return back()->with('success', 'Kupon kodu aktiv edildi!');
+    }
+
+    public function cartCheckout()
+    {
+        $cartItems = session('cart', []);
+        $totalPrice = 0;
+        foreach ($cartItems as $item) {
+            $totalPrice += $item['price'] * $item['count'];
+        }
+        $oldTotalPrice = $totalPrice;
+
+        if (session('newTotalPrice') && $totalPrice > 0) {
+            $totalPrice = session('newTotalPrice');
+        }
+
+        return view('frontend.pages.cart-checkout',
+            [
+                'totalPrice' => $totalPrice,
+                'oldTotalPrice' => $oldTotalPrice
+            ]);
     }
 }

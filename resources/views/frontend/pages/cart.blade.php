@@ -64,7 +64,7 @@
                                             </div>
 
                                         </td>
-                                        <td class="itemTotalPrice">{{ $item['price'] * $item['count'] }} AZN</td>
+                                        <td class="itemTotalPrice">{{ $item['price'] * $item['count'] }} &#8380;</td>
                                         <form action="{{ route('cart.remove') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="productID" value="{{ $key }}">
@@ -117,33 +117,34 @@
                                     <span class="text-black">Ümumi Məbləğ</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-black totalPriceAll">{{ $oldTotalPrice }} AZN</strong>
+                                    <strong class="text-black totalPriceAll">{{ $oldTotalPrice }} &#8380;</strong>
                                 </div>
                             </div>
                             <div class="row mb-5">
                                 <div class="col-md-6">
-                                    <span class="text-black">Son Məbləğ</span>
+                                    <span class="text-black textTotal">{{ !session('newTotalPrice') ? 'Son Məbləğ' : 'Endirimli Məbləğ' }}</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-danger totalPriceLast" style="font-size: 20px">{{ $totalPrice }} AZN</strong>
+                                    <strong class="text-danger totalPriceLast" style="font-size: 20px">{{ $totalPrice }} &#8380;</strong>
                                     <br>
                                     @if(session('newTotalPrice') && $totalPrice > 0)
                                         @php
                                             $percentage = round(100 - $totalPrice*100/$oldTotalPrice, 2);
                                             $percentage = floor($percentage*100)/100;
                                         @endphp
-                                        <strong class="text-warning">{{ $percentage }} %</strong>
-                                        <small style="margin-left: 5px">
-                                            <s class="text-secondary">{{ $oldTotalPrice }} AZN</s>
-                                        </small>
+                                        <div class="divPercent">
+                                            <strong class="text-warning">{{ $percentage }} %</strong>
+                                            <small style="margin-left: 5px">
+                                                <s class="text-secondary">{{ $oldTotalPrice }} &#8380;</s>
+                                            </small>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-primary btn-lg py-3 btn-block"
-                                            onclick="window.location='checkout.html'">Ödənişi Təsdiq Et
+                                    <button class="btn btn-primary btn-lg py-3 btn-block btnPaymentConfirm">Ödənişi Təsdiq Et
                                     </button>
                                 </div>
                             </div>
@@ -157,6 +158,15 @@
 
 @section('js')
     <script>
+        $('.btnPaymentConfirm').on('click', function () {
+            if ("{{ !empty(session()->get('cart')) }}"){
+                window.location.href = "{{ route('cart.checkout') }}"
+            }
+            else {
+                alert('Səbətiniz Boşdur!');
+            }
+        })
+
         $('.btnIncrement, .btnDecrement').on('click', function () {
             let self = $(this);
             let id = self.data('id');
@@ -179,7 +189,8 @@
                         $('.item-'+id).find('.itemTotalPrice').text(data.totalItemPrice + ' AZN');
                     }
                     $('.totalPriceAll, .totalPriceLast').text(data.totalPrice + ' AZN');
-
+                    $('.divPercent').remove();
+                    $('.textTotal').text('Son Məbləğ');
                 },
                 error: function () {
                     console.log('Ajax Error!')
