@@ -35,10 +35,12 @@ Route::middleware('settings')->group(function (){
     Route::get('/big-sale', [ProductController::class, 'productBigSale'])->name('bigSale');
     Route::get('/product/{slug}', [ProductController::class, 'productDetail'])->name('productDetail');
 
+    //cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('/cart/checkout', [CartController::class, 'cartCheckout'])->name('cart.checkout');
+    Route::post('/cart/payment-confirm', [CartController::class, 'paymentConfirm'])->name('cart.payment-confirm');
 
     // Auth
     Route::get('/login', [AuthController::class, 'login'])->name('login');

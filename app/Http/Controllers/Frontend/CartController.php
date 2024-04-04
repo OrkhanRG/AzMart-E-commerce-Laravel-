@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PaymentConfirmRequest;
 use App\Models\Coupon;
+use App\Models\Invoice;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -172,5 +175,55 @@ class CartController extends Controller
                 'totalPrice' => $totalPrice,
                 'oldTotalPrice' => $oldTotalPrice
             ]);
+    }
+
+    function orderNO(int $length)
+    {
+        $generator = '123456789';
+        $orderNO = '';
+        for ($i=1; $i<=$length; $i++)
+        {
+            $orderNO .= substr($generator, (rand()%(strlen($generator))), 1);
+        }
+
+        if ($this->orderNoCheck($orderNO))
+        {
+            echo 'kod var';
+        }
+        else
+        {
+            return $orderNO;
+        }
+    }
+
+    function orderNoCheck($orderNO)
+    {
+        return Invoice::query()->where('orderNO', $orderNO)->first();
+    }
+
+    public function paymentConfirm(PaymentConfirmRequest $request)
+    {
+        $data = $request->all();
+        $data['orderNO'] = $this->orderNO(6);
+        if (!empty(session('coupon_code')))
+        {
+            $data['coupon_code'] = session()->get('coupon_code') ?? null;
+        }
+
+        $invoice = Invoice::query()->create($data);
+
+        foreach (session()->get('cart') as $key => $product) {
+            Order::query()->create([
+                'orderNO' => $invoice->orderNO,
+                'name' => $product['name'],
+                'product_id' => $key,
+                'count' => $product['count'],
+                'price' => $product['price'],
+                'totalPrice' => $product['price'] * $product['count'],
+            ]);
+        }
+        session()->forget('cart');
+
+        return redirect()->route('front.index')->with('success', 'Sifarişlər qeydə alındı və Faktura yaradıldı');
     }
 }
